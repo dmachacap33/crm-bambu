@@ -170,7 +170,7 @@ export default function CRMKommoStyle(){
 
   useEffect(()=>{
     if('serviceWorker' in navigator){
-      navigator.serviceWorker.register('./service-worker.js').catch(console.error);
+
     }
     initWASocket();
     return () => { waSocket?.close(); };
