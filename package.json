@@ -1,0 +1,13 @@
+{
+  "name": "crm-bambu",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "test": "echo \"No tests specified\""
+  },
+  "dependencies": {
+    "@adiwajshing/baileys": "^6.7.0",
+    "ws": "^8.17.0"
+  }
+}

@@ -96,16 +96,23 @@ const loadDB = (): DB => {
 };
 const saveDB = (db: DB) => localStorage.setItem("agua_bambu_crm_db", JSON.stringify(db));
 
+let waSocket: WebSocket | null = null;
+function initWASocket(){
+  if(!waSocket || waSocket.readyState === WebSocket.CLOSED){
+    waSocket = new WebSocket('ws://localhost:4000');
+    waSocket.addEventListener('open', () => console.log('WhatsApp socket conectado'));
+  }
+}
+
 async function healthCheck(){
   try { const r = await fetch(`${CONFIG.BUILDERBOT_BASE_URL}/api/whatsapp/health`); return { ok: r.ok, info: await r.json().catch(()=>({})) }; }
   catch { return { ok:false }; }
 }
 async function sendWhatsApp(to:string, text:string, meta?:any){
-  const r = await fetch(`${CONFIG.BUILDERBOT_BASE_URL}/api/whatsapp/send`, {
-    method: "POST", headers: { "Content-Type": "application/json", ...(CONFIG.BUILDERBOT_API_KEY? { Authorization:`Bearer ${CONFIG.BUILDERBOT_API_KEY}` }: {}) }, body: JSON.stringify({ to, text, meta })
-  });
-  if (!r.ok) throw new Error("No se pudo enviar por WhatsApp");
-  return r.json().catch(()=>({}));
+  if(!waSocket || waSocket.readyState !== WebSocket.OPEN){
+    initWASocket();
+  }
+  waSocket?.send(JSON.stringify({ to, text, meta }));
 }
 async function aiComplete(stageId:StageId, systemPrompt:string, messages:Array<{role:"user"|"assistant";content:string}>, lead:Lead){
   const r = await fetch(`${CONFIG.ASSISTANT_GATEWAY}/api/assistant/complete`, { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ stageId, systemPrompt, messages, lead }) });
@@ -133,6 +140,14 @@ export default function CRMKommoStyle(){
   const [openChatLeadId, setOpenChatLeadId] = useState<string|null>(null);
   const [showDistributorModal, setShowDistributorModal] = useState<{open:boolean; leadId?:string}>({ open:false });
   const fileRef = useRef<HTMLInputElement|null>(null);
+
+  useEffect(()=>{
+    if('serviceWorker' in navigator){
+      navigator.serviceWorker.register('/service-worker.js').catch(console.error);
+    }
+    initWASocket();
+    return () => { waSocket?.close(); };
+  }, []);
 
   useEffect(()=>{ saveDB(db); }, [db]);
 
