@@ -81,6 +81,7 @@ const CONFIG = {
   BUILDERBOT_BASE_URL: (window as any).ENV?.BUILDERBOT_BASE_URL || "http://localhost:3008",
   BUILDERBOT_API_KEY: (window as any).ENV?.BUILDERBOT_API_KEY || "",
   ASSISTANT_GATEWAY: (window as any).ENV?.ASSISTANT_GATEWAY || "http://localhost:3008",
+  WS_URL: (window as any).ENV?.WS_URL || "ws://localhost:4000",
 };
 
 const uid = () => Math.random().toString(36).slice(2);
@@ -99,7 +100,7 @@ const saveDB = (db: DB) => localStorage.setItem("agua_bambu_crm_db", JSON.string
 let waSocket: WebSocket | null = null;
 function initWASocket(){
   if(!waSocket || waSocket.readyState === WebSocket.CLOSED){
-    waSocket = new WebSocket('ws://localhost:4000');
+    waSocket = new WebSocket(CONFIG.WS_URL);
     waSocket.addEventListener('open', () => console.log('WhatsApp socket conectado'));
   }
 }
@@ -143,7 +144,7 @@ export default function CRMKommoStyle(){
 
   useEffect(()=>{
     if('serviceWorker' in navigator){
-      navigator.serviceWorker.register('/service-worker.js').catch(console.error);
+      navigator.serviceWorker.register('service-worker.js').catch(console.error);
     }
     initWASocket();
     return () => { waSocket?.close(); };
