@@ -1,13 +1,39 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
-import { Switch } from "@/components/ui/switch";
-import { Badge } from "@/components/ui/badge";
+import React, { useEffect, useMemo, useRef, useState } from "https://esm.sh/react@18";
+
+function Card({ children, ...props }){ return <div {...props}>{children}</div>; }
+function CardContent({ children, ...props }){ return <div {...props}>{children}</div>; }
+function Button({ children, ...props }){ return <button {...props}>{children}</button>; }
+function Input(props){ return <input {...props} />; }
+function Textarea(props){ return <textarea {...props} />; }
+function Select({ value, onValueChange, children, ...props }){
+  let content = null;
+  React.Children.forEach(children, child => { if(child.type === SelectContent) content = child; });
+  const options = content ? React.Children.map(content.props.children, item => <option value={item.props.value}>{item.props.children}</option>) : null;
+  return <select value={value} onChange={e=> onValueChange(e.target.value)} {...props}>{options}</select>;
+}
+function SelectTrigger({ children }){ return <>{children}</>; }
+function SelectValue(){ return null; }
+function SelectContent({ children }){ return <>{children}</>; }
+function SelectItem({ value, children }){ return <option value={value}>{children}</option>; }
+function Tabs({ value, onValueChange, children, ...props }){
+  return <div {...props}>{React.Children.map(children, child => {
+    if(child.type === TabsList) return React.cloneElement(child, { value, onValueChange });
+    if(child.type === TabsContent && child.props.value === value) return child;
+    return null;
+  })}</div>;
+}
+function TabsList({ children, value, onValueChange, ...props }){
+  return <div {...props}>{React.Children.map(children, child => React.cloneElement(child, { onSelect:onValueChange, selected: child.props.value===value }))}</div>;
+}
+function TabsTrigger({ value, onSelect, children, ...props }){ return <button onClick={()=> onSelect(value)} {...props}>{children}</button>; }
+function TabsContent({ children, ...props }){ return <div {...props}>{children}</div>; }
+function Dialog({ open, children }){ return open? <div className="fixed inset-0 z-50"><div className="absolute inset-0"/> {children}</div> : null; }
+function DialogContent({ children, ...props }){ return <div {...props}>{children}</div>; }
+function DialogHeader({ children, ...props }){ return <div {...props}>{children}</div>; }
+function DialogTitle({ children, ...props }){ return <h3 {...props}>{children}</h3>; }
+function DialogFooter({ children, ...props }){ return <div {...props}>{children}</div>; }
+function Switch({ checked, onCheckedChange, ...props }){ return <input type="checkbox" checked={checked} onChange={e=> onCheckedChange(e.target.checked)} {...props}/>; }
+function Badge({ children, ...props }){ return <span {...props}>{children}</span>; }
 
 // ICONS (compact): single <Icon name="..."/> instead of many components
 // Reduces canvas length; no external fetches.
@@ -144,7 +170,7 @@ export default function CRMKommoStyle(){
 
   useEffect(()=>{
     if('serviceWorker' in navigator){
-      navigator.serviceWorker.register('service-worker.js').catch(console.error);
+
     }
     initWASocket();
     return () => { waSocket?.close(); };
@@ -500,3 +526,6 @@ function ChatsInbox({ leads, onOpen }:{ leads:Lead[]; onOpen:(id:string)=>void }
 
 // --- Self-tests compactos ---
 (function __tests__(){ try{ console.assert(/^\d{4}-\d{2}-\d{2}$/.test(todayISO()), 'todayISO'); const s=new Set(Array.from({length:5}, uid)); console.assert(s.size===5, 'uid unique'); console.assert(DEFAULT_STAGES.length>=4,'stages'); }catch(e){ console.warn('SelfTests:', e); } })();
+
+import { createRoot } from "https://esm.sh/react-dom@18/client";
+createRoot(document.getElementById('root')).render(<CRMKommoStyle />);
