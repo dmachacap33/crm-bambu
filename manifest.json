@@ -1,9 +1,0 @@
-{
-  "name": "CRM Bambu",
-  "short_name": "BambuCRM",
-  "start_url": ".",
-  "display": "standalone",
-  "background_color": "#ffffff",
-  "description": "CRM para gestión de leads de agua Bambu",
-  "icons": []
-}
