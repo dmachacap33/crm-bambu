@@ -108,6 +108,8 @@ const CONFIG = {
   BUILDERBOT_API_KEY: (window as any).ENV?.BUILDERBOT_API_KEY || "",
   ASSISTANT_GATEWAY: (window as any).ENV?.ASSISTANT_GATEWAY || "http://localhost:3008",
   WS_URL: (window as any).ENV?.WS_URL || "ws://localhost:4000",
+  FIREBASE_CONFIG: (window as any).ENV?.FIREBASE_CONFIG || null,
+  FIREBASE_VAPID_KEY: (window as any).ENV?.FIREBASE_VAPID_KEY || "",
 };
 
 const uid = () => Math.random().toString(36).slice(2);
@@ -170,8 +172,27 @@ export default function CRMKommoStyle(){
 
   useEffect(()=>{
     if('serviceWorker' in navigator){
-
+      navigator.serviceWorker.register('./service-worker.js');
+      navigator.serviceWorker.register('./firebase-messaging-sw.js');
     }
+    async function initFirebase(){
+      if(!CONFIG.FIREBASE_CONFIG) return;
+      try{
+        const { initializeApp } = await import('https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js');
+        const { getMessaging, getToken, onMessage } = await import('https://www.gstatic.com/firebasejs/9.22.2/firebase-messaging.js');
+        const app = initializeApp(CONFIG.FIREBASE_CONFIG);
+        const messaging = getMessaging(app);
+        if(Notification.permission !== 'granted') await Notification.requestPermission();
+        if(Notification.permission === 'granted'){
+          await getToken(messaging, { vapidKey: CONFIG.FIREBASE_VAPID_KEY }).catch(()=>{});
+          onMessage(messaging, payload => {
+            const { title, body } = payload.notification || {};
+            if(title) new Notification(title, { body });
+          });
+        }
+      } catch(e){ console.warn('Firebase init failed', e); }
+    }
+    initFirebase();
     initWASocket();
     return () => { waSocket?.close(); };
   }, []);
