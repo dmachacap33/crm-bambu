@@ -1,0 +1,10 @@
+/* Ajustes visuales */
+.stage {
+  min-height: 70vh;
+}
+.card {
+  cursor: grab;
+}
+.card:active {
+  cursor: grabbing;
+}

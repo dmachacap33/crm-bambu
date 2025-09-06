@@ -1,0 +1,23 @@
+{
+  "name": "crm-agua-bambu",
+  "version": "1.0.0",
+  "description": "CRM interactivo estilo Kommo con embudos, WhatsApp (Baileys QR) y asistentes IA por etapa.",
+  "main": "server/index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server/index.js",
+    "dev": "node --watch server/index.js"
+  },
+  "dependencies": {
+    "@whiskeysockets/baileys": "^6.7.9",
+    "body-parser": "^1.20.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "node-fetch": "^3.3.2",
+    "pino": "^9.3.2",
+    "qrcode": "^1.5.3",
+    "socket.io": "^4.7.5",
+    "uuid": "^9.0.1"
+  }
+}

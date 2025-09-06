@@ -1,0 +1,26 @@
+{
+  "stages": [
+    {
+      "id": "leads",
+      "name": "Leads",
+      "assistantEnv": "ASST_LEADS"
+    },
+    {
+      "id": "contactado",
+      "name": "Contactado",
+      "assistantEnv": "ASST_CONTACTADO"
+    },
+    {
+      "id": "cotizacion",
+      "name": "Cotización",
+      "assistantEnv": "ASST_COTIZACION"
+    },
+    {
+      "id": "cierre",
+      "name": "Cierre",
+      "assistantEnv": "ASST_CIERRE"
+    }
+  ],
+  "leads": [],
+  "distributors": []
+}

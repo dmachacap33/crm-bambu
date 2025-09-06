@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>CRM Agua Bambú</title>
+  <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./styles.css"/>
+</head>
+<body class="bg-slate-50 text-slate-800" style="font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, 'Helvetica Neue', Arial, 'Noto Sans', 'Liberation Sans', sans-serif">
+  <header class="sticky top-0 z-20 bg-white/80 backdrop-blur border-b border-slate-200">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex items-center gap-3">
+      <div class="w-9 h-9 rounded-2xl bg-emerald-500 text-white grid place-content-center font-bold">AB</div>
+      <h1 class="text-xl font-semibold">CRM Agua Bambú</h1>
+      <span id="waStatus" class="ml-auto text-sm px-2 py-1 rounded-full bg-yellow-100 text-yellow-800">WhatsApp: desconectado</span>
+      <button id="btnConnect" class="ml-3 px-3 py-1.5 text-sm rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white">Conectar WhatsApp</button>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-4 py-6">
+    <section class="mb-4">
+      <div class="flex items-center gap-2">
+        <h2 class="text-lg font-semibold">Embudos de ventas</h2>
+        <p class="text-slate-500 text-sm">Arrastra tarjetas entre etapas. Cada etapa tiene su propia IA entrenada.</p>
+      </div>
+    </section>
+
+    <section id="pipelines" class="grid grid-cols-1 md:grid-cols-4 gap-4 overflow-x-auto"></section>
+  </main>
+
+  <!-- Modal de QR -->
+  <div id="qrModal" class="fixed inset-0 hidden bg-black/40 items-center justify-center">
+    <div class="bg-white rounded-2xl shadow-xl p-6 w-full max-w-sm">
+      <h3 class="text-lg font-semibold mb-2">Escanea el QR con tu WhatsApp</h3>
+      <p class="text-sm text-slate-500 mb-3">Abrir WhatsApp → Menú de dispositivos vinculados → Vincular dispositivo.</p>
+      <div id="qrBox" class="w-full aspect-square border rounded-xl grid place-content-center"></div>
+      <div class="flex justify-end mt-4">
+        <button id="closeQR" class="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="./app.js"></script>
+</body>
+</html>
